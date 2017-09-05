@@ -1,7 +1,7 @@
-# Container4C
-### 一个C语言版的"Java Collections & Map",致力于为C语言使用者提供方便易用的集合框架。
+# JContainer4C
+### 一个C语言版的"Collection & Map",致力于为C语言使用者提供方便易用的类Java集合框架。
 #### 使用方式
-1.包含想使用的容器类型的头文件，例如要使用LinkedList 
+1.包含想使用的容器类型的头文件，例如要使用cLinkedList(类似Java的LinkedList) 
 ```c
 #include "clinkedlist.h"  
 ```
@@ -9,15 +9,15 @@
 ```c 
 typedef struct MyType { int x; double * num; } myType;
 ```
-3.实现5个自定义的函数,函数名可以改变,参数类型和返回值不得改变  
+3.实现5个自定义的函数
 ```c
-uint32_t c_equals(myType * this , myType * another);//自定义的相等规则
-int32_t c_compareTo(myType * this, myType * another);//大小规则
+uint32_t c_equals(myType * this , myType * another);//自定义的相等规则 相等返回0 不等返回-1
+int32_t c_compareTo(myType * this, myType * another);//大小规则 0表示相等 -1表示 this<another 1反之
 int32_t c_hashCode(myType * elem);//hashcode值生成规则
-myType * c_copy(myType * from);//拷贝函数
+myType * c_copy(myType * from);//拷贝函数 返回生成的副本的指针
 void c_destory();//销毁函数
 ```
-4.调用对应容器的create方法创建容器
+4.调用对应容器的XXX_create方法创建容器
 ```c
 cLinkedList * list = clinkedlist_create(c_equals, c_compareTo, c_hashCode, c_copy, c_destory);
  ```
@@ -25,6 +25,7 @@ cLinkedList * list = clinkedlist_create(c_equals, c_compareTo, c_hashCode, c_cop
 ```c
 list->addLast(list, elem1);
 list->clear(list);
+list->destory(list);
 ......
 ```
 6.下面是一个小例子
@@ -43,7 +44,7 @@ void c_destory();//销毁函数
 int main(int argc, char** args) {
     //创建LinkedList 失败则返回NULL
    cLinkedList * list = clinkedlist_create(c_equals, c_compareTo, c_hashCode, c_copy, c_destory);
-	  if (list) {
+   if (list) {
       myType * elem1 = (myType *)malloc(sizeof(myType));
       myType * elem2 = (myType *)malloc(sizeof(myType));
       myType * elem3 = (myType *)malloc(sizeof(myType));
@@ -65,8 +66,9 @@ int main(int argc, char** args) {
       myType * elem = (myType *)list->get(list,1);
       printf("%d : %.1f\n", elem->x,*elem->num );//1 100.0
       list->clear(list);
-      printf("%d\n", list->size(list)); //0	
-	  }
+      printf("%d\n", list->size(list)); //0
+      list->destory(list);
+   }
 }
 //其他4个自定义方法的实现省略
 void c_destory(myType * elem) {

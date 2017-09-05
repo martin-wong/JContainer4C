@@ -1,0 +1,21 @@
+#ifndef USER_DEFINE_H
+#define USER_DEFINE_H
+#include <stdint.h>
+
+//用户自定义函数的相关声明
+typedef struct MyType { int x; double * num; } myType; //自定义的元素类型
+int32_t c_equals(myType * this, myType * another);//自定义的相等规则
+int32_t c_compareTo(myType * this, myType * another);//大小规则
+int32_t c_hashCode(myType * elem);//hashcode值生成规则
+myType * c_copy(myType * from);//拷贝函数
+void c_destory(myType * elem);//销毁函数
+
+typedef struct cmetadata {
+	int32_t(*equals)(void * this, void * another);//自定义的相等规则
+	int32_t(*compareTo)(void * this, void * another);//大小规则
+	int32_t(*hashCode)(void * elem);//hashcode值生成规则
+	void * (*copy)(void * from);//拷贝函数
+	void(*destory)(void * from);//销毁函数
+}cMetadata;
+
+#endif
