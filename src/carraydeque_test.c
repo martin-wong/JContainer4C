@@ -4,16 +4,18 @@
 #include <stdlib.h>
 #include <assert.h>
 
+#define CRTDBG_MAP_ALLOC
 
 cArrayDeque * carraydeque_help_create_list(int numbersOfElem);
 void carraydeque_test_pollFirst();
 void carraydeque_test_peekFirst();
 void carraydeque_help_iter(cArrayDeque * deque);
+void carraydeque_test_leak();
 
-int main(int argc, char** args) {
-	carraydeque_help_iter(carraydeque_help_create_list(10));
-	
-}
+//int main(int argc, char** args) {
+//	carraydeque_test_leak();
+//	_CrtDumpMemoryLeaks();
+//}
 
 cArrayDeque * carraydeque_help_create_list(int numbersOfElem) {
 	cArrayDeque * deque = carraydeque_createBySize(c_equals, c_compareTo, c_hashCode, c_copy, c_destory, 6);
@@ -26,10 +28,15 @@ cArrayDeque * carraydeque_help_create_list(int numbersOfElem) {
 			elem->x = i;
 			elem->num = (double *)malloc(sizeof(double));
 			*elem->num = i*10.0;
-			deque->offerFirst(deque, elem);
+			deque->offerLast(deque, elem);
 		}
 	}
 	return deque;
+}
+
+void carraydeque_test_leak() {
+	cArrayDeque * deque = carraydeque_help_create_list(100);
+	deque->destory(deque);
 }
 
 void carraydeque_test_peekFirst() {
@@ -50,7 +57,7 @@ void carraydeque_help_iter(cArrayDeque * deque) {
 	
 	myType * first = NULL;
 	int i = 0;
-	while (first = deque->pollFirst(deque) ) {
+	while ((first = deque->pollFirst(deque))) {
 		i++;
 		printf("elem_%d:x=%d,num=%.2f\n", i, first->x, *first->num);
 	}

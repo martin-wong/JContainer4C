@@ -12,7 +12,7 @@ typedef struct carraydeque {
 	*/
 	uint32_t head; //第一个有效元素的位置
 	uint32_t tail; //尾部第一个空位
-	uint32_t size; //数组中元素的个数
+	uint32_t Size; //数组中元素的个数
 	uint32_t MAX_ARRAY_SIZE;//最大数组容量
 	uint32_t capacity; //数组大小
 	cMetadata * metaData;
@@ -21,6 +21,10 @@ typedef struct carraydeque {
 	int32_t(*offerFirst)(struct carraydeque * deque, void * elem);
 	void * (*pollFirst)(struct carraydeque * deque);
 	void * (*peekFirst)(struct carraydeque * deque);
+	void * (*destory)(struct carraydeque * deque);
+	void * (*clear)(struct carraydeque * deque);
+	void * (*size)(struct carraydeque * deque);
+
 
 } cArrayDeque;
 
@@ -42,6 +46,18 @@ cArrayDeque * carraydeque_createBySize(uint32_t(*c_equals)(void * this, void * a
 cArrayDeque * carraydeque_create(uint32_t(*c_equals)(void * this, void * another),
 	int32_t(*c_compareTo)(void * this, void * another), int32_t(*c_hashCode)(void * elem),
 	void * (*c_copy)(void * elem), void(*c_destory)(void * elem));
+
+/**
+* 销毁队列
+* @param deque      指向生成的cArrayDeque结构体的指针
+*/
+void * carraydeque_destory(cArrayDeque * deque);
+
+/**
+* 清空队列
+* @param deque      指向生成的cArrayDeque结构体的指针
+*/
+void * carraydeque_clear(cArrayDeque * deque);
 
 /**
 * 在队尾添加元素
@@ -73,5 +89,12 @@ void * carraydeque_peekFirst(cArrayDeque * deque);
 * @return           插入成功则返回0，失败则返回-1
 */
 int32_t carraydeque_offerFirst(cArrayDeque * deque, void * elem);
+
+/**
+* 返回元素个数
+* @param deque      指向生成的cArrayDeque结构体的指针
+* @return           元素个数
+*/
+uint32_t  carraydeque_size(cArrayDeque * deque);
 
 #endif

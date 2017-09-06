@@ -34,11 +34,12 @@ cLinkedList * clinkedlist_create(uint32_t(*c_equals)(void * this, void * another
 	p->removeElem = clinkedlist_removeElem;
 	p->set = clinkedlist_set;
 	p->indexOf = clinkedlist_indexOf;
+	p->destory = clinkedlist_destory;
 	return p;
 
 }
 
-int32_t clinkedlist_destory(cLinkedList * list) {
+void clinkedlist_destory(cLinkedList * list) {
 	if (!list)
 		return -1;
 	//释放每个节点的内存

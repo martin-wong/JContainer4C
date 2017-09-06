@@ -29,6 +29,7 @@ typedef struct clinkedlist { //linkedlist抽象数据结构
 	void (*clear)(struct clinkedlist * list);
 	void * (*get)(struct clinkedlist * list, uint32_t index);
 	void * (*set)(struct clinkedlist * list, uint32_t index, void * newElem);
+	void (*destory)(struct clinkedlist * list);
 	
 
 } cLinkedList;
@@ -51,10 +52,9 @@ cLinkedList * clinkedlist_create(uint32_t(*c_equals)(void * this, void * another
 /**
 * 销毁链表
 * @param list    由create返回的cLinkedList结构体指针
-* @return        成功返回0，失败返回-1（例如传入NULL会导致返回-1）
 * @remarks       调用此函数后，不得再使用list指针，因为其指向的内存已被释放
 */
-int32_t clinkedlist_destory(cLinkedList * list);
+void clinkedlist_destory(cLinkedList * list);
 
 /**
 * 在链表尾部插入元素(不是拷贝一份再插入，而是直接插入)

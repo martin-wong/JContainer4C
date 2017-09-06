@@ -19,6 +19,8 @@ typedef struct carraylist {
 	void * (*set)(struct carraylist * list, uint32_t index, void * newElem);
 	void * (*remove)(struct carraylist * list, uint32_t index);
 	int64_t (*indexOf)(struct carraylist * list, void * elem);
+	void ( *destory)(struct carraylist * list);
+	void(*clear)(struct carraylist * list);
 
 } cArrayList;
 
@@ -50,6 +52,12 @@ cArrayList * carraylist_createBySize(uint32_t(*c_equals)(void * this, void * ano
 cArrayList * carraylist_create(uint32_t(*c_equals)(void * this, void * another),
 	int32_t(*c_compareTo)(void * this, void * another), int32_t(*c_hashCode)(void * elem),
 	void * (*c_copy)(void * elem), void(*c_destory)(void * elem));
+
+/**
+* 销毁数组
+* @param list       指向生成的cArrayList结构体的指针
+*/
+void carraylist_destory(cArrayList * list);
 
 /**
 * 在数组末尾添加元素
@@ -100,4 +108,11 @@ void * carraylist_remove(cArrayList * list, uint32_t index);
 * @return           找不到返回-1 找到返回index
 */
 int64_t carraylist_indexOf(struct carraylist * list, void * elem);
+
+/**
+* 清空数组内的元素
+* @param list       指向生成的cArrayList结构体的指针
+*/
+void carraylist_clear(cArrayList * list);
+
 #endif 

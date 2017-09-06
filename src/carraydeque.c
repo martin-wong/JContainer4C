@@ -29,7 +29,7 @@ cArrayDeque * carraydeque_createBySize(uint32_t(*c_equals)(void * this, void * a
 
 	p->metaData = metadate_p; //初始化元数据
 	p->MAX_ARRAY_SIZE = pow(2, sizeof(uint32_t) * 8) - 8;
-	p->size = 0;
+	p->Size = 0;
 	p->head = 0;
 	p->tail = 0;
 	
@@ -37,6 +37,10 @@ cArrayDeque * carraydeque_createBySize(uint32_t(*c_equals)(void * this, void * a
 	p->peekFirst = carraydeque_peekFirst;
 	p->pollFirst = carraydeque_pollFirst;
 	p->offerFirst = carraydeque_offerFirst;
+	p->clear = carraydeque_clear;
+	p->destory = carraydeque_destory;
+	p->size = carraydeque_size;
+
 	return p;
 
 }
@@ -46,6 +50,24 @@ cArrayDeque * carraydeque_create(uint32_t(*c_equals)(void * this, void * another
 	void * (*c_copy)(void * elem), void(*c_destory)(void * elem)) {
 
 	carraydeque_createBySize(c_equals, c_compareTo, c_hashCode, c_copy, c_destory, DEFAULT_CARRAYDEQUE_CAPACITY);
+}
+
+void * carraydeque_destory(cArrayDeque * deque){
+	if(!deque)
+	   return NULL;
+	carraydeque_clear(deque);
+	free(deque->metaData);
+	free(deque->elementData);
+	free(deque);
+}
+
+void * carraydeque_clear(cArrayDeque * deque){
+	if (!deque)
+		return NULL;
+	void * elem;
+	while ((elem = carraydeque_pollFirst(deque))) //效率不高 
+		deque->metaData->destory(elem);
+	deque->Size = deque->head = deque->tail = 0;
 }
 
 int32_t carraydeque_offerLast(cArrayDeque * deque, void * elem) {
@@ -62,16 +84,16 @@ int32_t carraydeque_offerLast(cArrayDeque * deque, void * elem) {
 			deque->tail = oldtail;
 			return -1;
 		}
-	deque->size++; //插入之后仍有空间
+	deque->Size++; //插入之后仍有空间
 	return 0;
 
 }
 
 void * carraydeque_pollFirst(cArrayDeque * deque){
 	
-	if (!deque || !deque->size)
+	if (!deque || !deque->Size)
 		return NULL;
-	deque->size--;
+	deque->Size--;
 	void * old = deque->elementData[deque->head];
 	deque->head = (deque->head + 1 == deque->capacity )? 0:deque->head + 1;
 	return old;
@@ -79,7 +101,7 @@ void * carraydeque_pollFirst(cArrayDeque * deque){
 
 void * carraydeque_peekFirst(cArrayDeque * deque){
 
-	if(!deque || !deque->size)
+	if(!deque || !deque->Size)
 	   return NULL;
 	return deque->elementData[deque->head];
 }
@@ -99,8 +121,12 @@ int32_t carraydeque_offerFirst(cArrayDeque * deque, void * elem){
 			deque->head = oldhead;
 			return -1;
 		}
-	deque->size++; //插入之后仍有空间
+	deque->Size++; //插入之后仍有空间
 	return 0;
+}
+
+uint32_t carraydeque_size(cArrayDeque * deque){
+	return deque ? deque->Size : 0;
 }
 
 ////head往前遇上了tail 或 tail往后遇到了head 才导致扩容,扩容2倍  失败则返回-1 否则返回0

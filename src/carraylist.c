@@ -43,6 +43,8 @@ cArrayList * carraylist_createBySize(uint32_t(*c_equals)(void * this, void * ano
 	p->set = carraylist_set;
 	p->remove = carraylist_remove;
 	p->indexOf = carraylist_indexOf;
+	p->destory = carraylist_destory;
+	p->clear = carraylist_clear;
 
 	return p;
 }
@@ -51,6 +53,15 @@ cArrayList * carraylist_create(uint32_t(*c_equals)(void * this, void * another),
 	    int32_t(*c_compareTo)(void * this, void * another), int32_t(*c_hashCode)(void * elem),
 	     void * (*c_copy)(void * elem), void(*c_destory)(void * elem)) {
 	carraylist_createBySize(c_equals, c_compareTo, c_hashCode, c_copy, c_destory,DEFAULT_CARRAYLIST_CAPACITY);
+}
+
+void carraylist_destory(cArrayList * list){
+	if (!list)
+		return;
+	list->clear(list);
+	free(list->metaData);
+	free(list->elementData);
+	free(list);
 }
 
 int32_t carraylist_addLast(cArrayList * list, void * elem) {
@@ -91,6 +102,18 @@ int64_t carraylist_indexOf(struct carraylist * list, void * elem) {
 			return i;
 	}
 	return -1;
+}
+
+void carraylist_clear(cArrayList * list){
+	if (!list)
+		return;
+	for (int i = 0 ; i < list->size ; i++){
+		void * elem = list->elementData[i];
+		if(elem)
+		   list->metaData->destory(list->elementData[i]);
+		list->elementData[i] = NULL;
+	}
+	list->size = 0;
 }
 
 void * carraylist_remove(cArrayList * list, uint32_t index) {

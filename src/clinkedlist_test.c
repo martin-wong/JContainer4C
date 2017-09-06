@@ -11,12 +11,14 @@ void test_Remove();
 void test_Set();
 void test_IndexOf();
 void test_Destory();
+void test_leak();
 
-/*
-int main(int argc, char** args) {
-	test_Destory();
-}
-*/
+
+//int main(int argc, char** args) {
+//	test_leak();
+//	_CrtDumpMemoryLeaks();
+//}
+
 cLinkedList * help_creat_list() {
 	cLinkedList * list = clinkedlist_create(c_equals, c_compareTo, c_hashCode, c_copy, c_destory);//创建LinkedList 失败则返回NULL
 	if (list) {
@@ -38,6 +40,19 @@ cLinkedList * help_creat_list() {
 		list->addFirst(list, elem3);
 	}
 	return list;
+}
+
+void test_leak() {
+	cLinkedList * list = help_creat_list();
+	for (int i = 1; i < 10000; i++)
+	{
+		myType * elem = (myType *)malloc(sizeof(myType));
+		elem->x = i;
+		elem->num = (double *)malloc(sizeof(double));
+		*elem->num = i*10.0;
+		list->addLast(list, elem);
+	}
+	list->destory(list);
 }
 
 void help_iterater_list(cLinkedList * list) {

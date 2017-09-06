@@ -16,9 +16,9 @@ void carraylist_test_remove();
 void carraylist_test_indexOf();
 
 //int main(int argc, char** args) {
-//    //_CrtSetBreakAlloc(102);
-//	carraylist_test_indexOf();
-//	//_CrtDumpMemoryLeaks();
+//    //_CrtSetBreakAlloc(77);
+//	carraylist_test_leak();
+//	_CrtDumpMemoryLeaks();
 //}
 
 
@@ -121,15 +121,9 @@ void carraylist_test_get() {
 void carraylist_test_leak() {
 
 	//下面测试内存泄漏情况
-	cArrayList * list = carraylist_help_create_list(5000000); //内存占用大约500MB
-	for (int i = 0; i < list->size; i++) {
-		myType * elem = (myType *)list->get(list, i);
-		free(elem->num);
-		free(elem);
-	}
-	free(list->elementData);
-	free(list->metaData);
-	free(list); //0.7MB 初步判定没有内存泄漏发生 
+	cArrayList * list = carraylist_help_create_list(50000);
+	list->destory(list);
+	
 }
 
 void carraylist_help_iterater(cArrayList * list) {
