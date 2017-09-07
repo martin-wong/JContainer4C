@@ -1,7 +1,17 @@
 # JContainer4C
-### 一个C语言版的"Collection & Map",致力于为C语言使用者提供方便易用的类Java集合框架。
-#### 使用方式
-1.包含想使用的容器类型的头文件，例如要使用cLinkedList(类似Java的LinkedList) 
+### 一个C语言版的"Collection & Map"，致力于为C语言使用者提供方便易用的类Java集合框架。  
+#### 1. JContainer4C框架的底层数据结构基本与JDK1.7保持一致，分别如下：  
+```
+cArrayList  <=>  ArrayList   ---> 动态数组
+cLinkedList <=>  LinkedList  ---> 双向链表
+cArrayDeque <=>  ArrayDeque  ---> 循环数组
+cHashMap    <=>  HashMap     ---> 数组+单链表
+cHashSet    <=>  HashSet     ---> 基于cHashMap/HashMap
+cTreeMap    <=>  TreeMap     ---> 红黑树
+cTreeSet    <=>  TreeSet     ---> 基于cTreeMap/TreeMap
+```
+#### 2 .使用方式
+1.包含想使用的容器类型的头文件，例如要使用cLinkedList（类似Java的LinkedList） ：
 ```c
 #include "clinkedlist.h"  
 ```
@@ -12,7 +22,7 @@ typedef struct MyType { int x; double * num; } myType; //自定义的元素类�
 //如果使用Map，则还需要自定义一个"Value"的类型，例如： 
 typedef struct MyMapValueType { char name; } valueType; //自定义的Map值的元素类型
 ```
-3.实现5个自定义的函数(要使用Map则是6个)
+3.实现5个自定义的函数（要使用Map则是6个)。
 ```c
 int32_t c_equals(myType * this, myType * another);//自定义的相等规则
 int32_t c_compareTo(myType * this, myType * another);//大小规则 this<another返回-1 反之返回1 相等返回0
@@ -21,18 +31,18 @@ myType * c_copy(myType * from);//拷贝函数
 void c_destory(myType * elem);//销毁函数(用于Map时，则会被用来销毁key)
 void c_destoryValue(valueType * value);//用于销毁map的value的销毁函数
 ```
-4.调用对应容器的XXX_create方法注册自定义函数，并创建容器
+4.调用对应容器的XXX_create方法注册自定义函数，并创建容器。
 ```c
 cLinkedList * list = clinkedlist_create(c_equals, c_compareTo, c_hashCode, c_copy, c_destory);
  ```
-5.使用得到的容器指针进行各项操作，方法调用的第一个参数必须是指针本身(类似与Java中隐式的this指针)
+5.使用得到的容器指针进行各项操作，方法调用的第一个参数必须是指针本身（类似与Java中隐式的this指针)。
 ```c
 list->addLast(list, elem1);
 list->clear(list);
 list->destory(list); //完全销毁容器 释放所有申请的内存
 ......
 ```
-6.下面是一个小例子
+6.下面是一个小例子：
 ```c
 #include <stdio.h>
 #include <stdlib.h>
