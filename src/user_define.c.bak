@@ -35,7 +35,6 @@ int32_t c_compareTo(myType * this, myType * another) {
 		return 1;
 	return 0;
 }
-
 int32_t c_hashCode(myType * elem) {
 	return	elem->x * (int32_t)(*elem->num) + elem->x * ((int32_t)(*elem->num)/3.14);
 }

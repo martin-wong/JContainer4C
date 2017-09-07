@@ -7,15 +7,15 @@
 ```
 2.自定义元素数据类型，例如：
 ```c 
-//使用list及queue类型的容器，自定义一个元素类型即可
+//使用list及queue容器，自定义一个元素类型即可
 typedef struct MyType { int x; double * num; } myType; //自定义的元素类型(也用于Map的键的类型)
-//如果使用Map则还需要自定义一个"Value"的类型，例如： 
+//如果使用Map，则还需要自定义一个"Value"的类型，例如： 
 typedef struct MyMapValueType { char name; } valueType; //自定义的Map值的元素类型
 ```
 3.实现5个自定义的函数(要使用Map则是6个)
 ```c
 int32_t c_equals(myType * this, myType * another);//自定义的相等规则
-int32_t c_compareTo(myType * this, myType * another);//大小规则
+int32_t c_compareTo(myType * this, myType * another);//大小规则 this<another返回-1 反之返回1 相等返回0
 int32_t c_hashCode(myType * key);//hashcode值生成规则
 myType * c_copy(myType * from);//拷贝函数
 void c_destory(myType * elem);//销毁函数(用于Map时，则会被用来销毁key)
@@ -42,14 +42,6 @@ list->destory(list); //完全销毁容器 释放所有申请的内存
 typedef struct MyType { int x; double * num; } myType; //自定义的元素类型
 typedef struct MyMapValueType { char name; } valueType; //自定义的元素类型
 
-uint32_t c_equals(myType * this , myType * another);//自定义的相等规则
-int32_t c_compareTo(myType * this, myType * another);//大小规则
-int32_t c_hashCode(myType * elem);//hashcode值生成规则
-myType * c_copy(myType * from);//拷贝函数
-void c_destory();//销毁函数
-void c_destoryValue(valueType * value);
-
-
 myType * _new_Key(int num);
 valueType * _new_Value(char c);
 
@@ -58,7 +50,8 @@ int main(int argc, char** args) {
 	//创建容器
 	int initialCapacity = 100; float loadFactory = 0.6;
 	cLinkedList * list = clinkedlist_create(c_equals, c_compareTo, c_hashCode, c_copy, c_destory);
-	cHashMap * map = chashmap_createBySize(c_equals, c_compareTo, c_hashCode, c_copy, c_destory, c_destoryValue, initialCapacity, loadFactory);
+	cHashMap * map = chashmap_createBySize(c_equals, c_compareTo, c_hashCode, c_copy, c_destory, 
+	                                       c_destoryValue, initialCapacity, loadFactory);
 	
 	//使用容器
 	list->addLast(list, _new_Key(1));
@@ -122,8 +115,14 @@ void c_destory(myType * elem) { //因为保证加入容器的对象是malloc出�
 	free(elem);
 }
 
-void c_destoryValue(valueType * value){
-	free(value);
-}
+void c_destoryValue(valueType * value){ free(value); }
 
+int32_t c_compareTo(myType * this, myType * another) {
+	if (this == another) return 0;
+	if (!this) return -1;
+	if (!another) return 1;
+	if (this->x < another->x) return -1;
+	if (this->x > another->x) return 1;
+	return 0;
+}
 ```

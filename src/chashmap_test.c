@@ -16,11 +16,11 @@ void chashmap_test_leaks();
 
 void chashmap_showValue(valueType * value);
 
-int main(int argc, char** args) {
-   //_CrtSetBreakAlloc(75);
-	chashmap_test_leaks();
-	//_CrtDumpMemoryLeaks();	
-}
+//int main(int argc, char** args) {
+//   _CrtSetBreakAlloc(75);
+//	chashmap_test_leaks();
+//	_CrtDumpMemoryLeaks();	
+//}
 
 cHashMap * chashmap_help_create(int initialCapacity , float loadFactory) {
 	return chashmap_createBySize(c_equals, c_compareTo, c_hashCode, c_copy, c_destory,c_destoryValue, initialCapacity, loadFactory);
